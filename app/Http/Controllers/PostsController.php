@@ -15,8 +15,23 @@ class PostsController extends Controller
      */
     public function index()
     {
-        $posts = Post::with('photos')->get();
+        $posts = Post::with('photoNames')->get();
         return view('posts.index', compact('posts'));
+    }
+ /**
+     * Display a listing of the resource.
+     *
+     * @return \Illuminate\Http\Response
+     */
+    public function apiGet()
+    {
+        $posts = Post::all();
+
+        foreach ($posts as $post){
+            $post->photos = $post->photos()->pluck('filename')->toArray();
+        }
+
+        return response()->json(compact('posts'));
     }
 
     /**
@@ -32,7 +47,7 @@ class PostsController extends Controller
     /**
      * Store a newly created resource in storage.
      *
-     * @param  \Illuminate\Http\Request  $request
+     * @param  \Illuminate\Http\Request $request
      * @return \Illuminate\Http\Response
      */
     public function store(Request $request)
@@ -50,9 +65,29 @@ class PostsController extends Controller
     }
 
     /**
+     * Store a newly created resource in storage.
+     *
+     * @param  \Illuminate\Http\Request $request
+     * @return \Illuminate\Http\Response
+     */
+    public function apiStore(Request $request)
+    {
+        $post = Post::create($request->only(['title']));
+        $photos = explode(",", $request->get('photos'));
+        foreach ($photos as $photo) {
+            Photo::create([
+                'imageable_id' => $post->id,
+                'imageable_type' => 'App\Post',
+                'filename' => $photo
+            ]);
+        }
+        return response()->json(['message' => 'Post successfully created.']);
+    }
+
+    /**
      * Display the specified resource.
      *
-     * @param  int  $id
+     * @param  int $id
      * @return \Illuminate\Http\Response
      */
     public function show($id)
@@ -63,7 +98,7 @@ class PostsController extends Controller
     /**
      * Show the form for editing the specified resource.
      *
-     * @param  int  $id
+     * @param  int $id
      * @return \Illuminate\Http\Response
      */
     public function edit($id)
@@ -74,8 +109,8 @@ class PostsController extends Controller
     /**
      * Update the specified resource in storage.
      *
-     * @param  \Illuminate\Http\Request  $request
-     * @param  int  $id
+     * @param  \Illuminate\Http\Request $request
+     * @param  int $id
      * @return \Illuminate\Http\Response
      */
     public function update(Request $request, $id)
@@ -86,7 +121,7 @@ class PostsController extends Controller
     /**
      * Remove the specified resource from storage.
      *
-     * @param  int  $id
+     * @param  int $id
      * @return \Illuminate\Http\Response
      */
     public function destroy($id)

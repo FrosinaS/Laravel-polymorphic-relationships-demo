@@ -13,4 +13,20 @@ class Post extends Model
     {
         return $this->morphMany('App\Photo', 'imageable');
     }
+
+    /**
+     * @return \Illuminate\Database\Eloquent\Collection|\Illuminate\Database\Eloquent\Relations\MorphMany[]
+     */
+    public function photoNames()
+    {
+        return $this->morphMany('App\Photo', 'imageable')->select('filename')->get();
+    }
+
+    public function jsonSerialize()
+    {
+        return [
+            'title' => $this->title,
+            'model_type' => 'Post'
+        ];
+    }
 }

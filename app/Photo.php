@@ -14,4 +14,16 @@ class Photo extends Model
         return $this->morphTo();
     }
 
+    /**
+     * @return array
+     */
+    public function jsonSerialize()
+    {
+        return [
+            'id'=> $this->id,
+            'filename' => $this->filename,
+            'model' => $this->imageable
+        ];
+    }
+
 }

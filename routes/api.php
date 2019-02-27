@@ -16,3 +16,16 @@ use Illuminate\Http\Request;
 Route::middleware('auth:api')->get('/user', function (Request $request) {
     return $request->user();
 });
+
+Route::middleware(['cors'])->group(function ($router) {
+    $router->get('/photos', 'PhotosController@apiGet');
+    $router->get('/photos/{id}', 'PhotosController@apiGetPhoto');
+
+    $router->get('/posts', 'PostsController@apiget');
+    $router->post('/posts/create', 'PostsController@apiStore');
+
+    $router->get('/products', 'ProductsController@apiGet');
+    $router->post('/products/create', 'ProductsController@apiStore');
+
+});
+

@@ -45,6 +45,7 @@
                         <li><a href="{{ route('posts.index') }}">Posts</a></li>
                         <li><a href="{{ route('products.index') }}">Products</a></li>
                         <li><a href="{{ route('posts.create') }}">Add Post</a></li>
+                        <li><a href="{{ route('products.create') }}">Add Product</a></li>
                     </ul>
                 </div>
             </div>
